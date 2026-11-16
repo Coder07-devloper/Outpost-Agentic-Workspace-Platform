@@ -10,6 +10,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { landingCopy } from "./_data/landing";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { HydratedPricingTable } from "@/components/HydratedPricingTable";
+
+const PRICING_TAB = "rounded-full px-5 data-active:bg-primary data-active:text-primary-foreground dark:data-active:bg-primary dark:data-active:text-primary-foreground";
 
 const { mockups } = landingCopy;
 
@@ -318,21 +322,20 @@ export default function Home() {
       </section>
 
       <section id="pricing" className="px-6 py-24 sm:py-32">
-        <div className="mx-auto max-w-4xl text-center">
+        <div className="mx-auto mb-12 max-w-4xl text-center">
           <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-primary">{pricing.eyebrow}</span>
           <h2 className="mt-4 text-balance font-heading text-3xl font-semibold tracking-[-0.04em] sm:text-4xl md:text-5xl">
             {pricing.title}
           </h2>
-          <div className="mx-auto mt-10 max-w-2xl rounded-2xl border border-border/80 bg-card/55 px-6 py-9 sm:px-10 sm:py-12">
-            <span className="inline-flex rounded-full border border-primary/25 bg-primary/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-primary">
-              {pricing.placeholder}
-            </span>
-            <p className="mx-auto mt-5 max-w-lg text-sm leading-7 text-muted-foreground sm:text-base">
-              {pricing.description}
-            </p>
-            <Button asChild className="mt-7 h-11 rounded-xl px-5 text-sm">
-              <Link href="/sign-up">{pricing.action}</Link>
-            </Button>
+          <div className="mx-auto mt-10 w-full max-w-7xl rounded-2xl border border-border/80 bg-card/55 px-6 py-9 sm:px-10 sm:py-12">
+          <Tabs defaultValue="user" className="mx-auto w-full max-w-5xl items-center gap-10">
+            <TabsList className="h-auto rounded-full border border-white/10 bg-white/5 p-1">
+              <TabsTrigger value="user" className={PRICING_TAB}>Personal</TabsTrigger>
+              <TabsTrigger value="organization" className={PRICING_TAB}>Team</TabsTrigger>
+            </TabsList>
+            <TabsContent value="user" className="w-full"><HydratedPricingTable for="user" /></TabsContent>
+            <TabsContent value="organization" className="w-full"><HydratedPricingTable for="organization" /></TabsContent>
+          </Tabs>
           </div>
         </div>
       </section>
