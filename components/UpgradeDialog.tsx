@@ -1,8 +1,7 @@
-"use-client"
+"use client";
 
-
-import { useAuth } from '@clerk/nextjs';
-import React, { createContext, ReactNode, useState } from 'react'
+import { PricingTable, useAuth } from '@clerk/nextjs';
+import React, { createContext, ReactNode, useContext, useState } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 
 
@@ -18,36 +17,40 @@ const UpgradeDialogContext = createContext<(reason?: UpgradeReason) => void>(
 )
 
 
-const UpgradeDialogProvider = ({children} : {children: ReactNode}) => {
+export const UpgradeDialogProvider = ({children} : {children: ReactNode}) => {
 
     const [reason, setReason] = useState<UpgradeReason | null >(null);
     const {orgId} = useAuth();
     const close = () => setReason(null);
-
-
 
   return (
     
       <UpgradeDialogContext.Provider value={(next) => setReason(next ?? DEFAULT_REASON)}>
         {children}
 
-        <Dialog>
-         <DialogTrigger>Open</DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Are you absolutely sure?</DialogTitle>
-                  <DialogDescription>
-                       This action cannot be undone. This will permanently delete your account
-                      and remove your data from our servers.
+        <Dialog modal={false}
+        open={reason !== null}
+        onOpenChange={(open) => !open && close()}>
+            <DialogContent className='max-h-[90vh] overflow-y-auto sm:max-w-5xl'>
+              <DialogHeader className='items-center text-center'>
+                <DialogTitle className='text-2xl'>{reason?.title}</DialogTitle>
+                {reason?.description &&(
+                     <DialogDescription>
+                       {reason?.description}
                   </DialogDescription>
+                 )}
              </DialogHeader>
+
+             <PricingTable for={orgId ? "organization" : "user"} />
          </DialogContent>
         </Dialog>
-
       </UpgradeDialogContext.Provider>
     
   
   )
 }
 
-export default UpgradeDialogProvider;
+export function useUpgradeDialog(){
+    return useContext(UpgradeDialogContext);
+}
+
